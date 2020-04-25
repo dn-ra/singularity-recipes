@@ -1,0 +1,51 @@
+Bootstrap: library
+From: ubuntu:latest
+
+###SECTIONS###
+
+
+%help
+Built by:
+Daniel Rawlinson
+The Peter Doherty Institute for Infection and Immunity
+daniel.rawlinson@unimelb.edu.au
+
+This container runs kraken2 on your read data against the entire gtdb taxonomy.
+GTDB has been converted to a compressed kraken2 database using scripts provided by Ryan Wick (https://github.com/rrwick/Metagenomics-Index-Correction) 
+To pass packaged database into pipe, pass '--db /gtdb_mini_r89' as parameter in kraken2.
+
+Full command for kraken2 analysis of reads:
+
+singularity exec -B [Directory where your data is stored]:/mnt kraken2_mini_gtdb.sif /kraken2/kraken2 --use-names --db /gtdb_mini_r89 /mnt/[Your read file name]
+
+
+%files
+/DataOnline/Data/GTDB_r89/gtdb_mini_r89 /
+
+%environment
+LC_ALL=C
+export LC_ALL
+
+%post
+
+apt-get update -y
+
+apt-get install -y git
+apt-get install -y wget
+
+apt-get install --fix-broken
+apt-get autoclean
+apt-get autoremove
+
+apt-get remove -y g++
+apt-get install -y g++
+apt-get install -y make
+
+
+git clone https://github.com/DerrickWood/kraken2.git
+cd kraken2
+./install_kraken2.sh .
+
+ls -l
+cd / 
+
